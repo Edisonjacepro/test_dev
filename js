@@ -110,3 +110,29 @@ ajaxRequest(
     }
 );
 -------------------------------------------------------------------
+    document.addEventListener("DOMContentLoaded", function () {
+    let serialInput = document.getElementById("serial_number");
+
+    serialInput.addEventListener("blur", function () {
+        let serialNumber = serialInput.value.trim();
+
+        if (serialNumber !== "") {
+            fetch("plugins/monplugin/ajax/check_serial.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({ serial: serialNumber })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    alert("⚠️ Ce numéro de série existe déjà !");
+                    serialInput.style.border = "2px solid red";
+                } else {
+                    serialInput.style.border = "";
+                }
+            })
+            .catch(error => console.error("Erreur AJAX:", error));
+        }
+    });
+});
+
